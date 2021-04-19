@@ -1,0 +1,17 @@
+.actorList {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.actorCard {
+  list-style: none;
+  width: 170px;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid black;
+  text-align: center;
+}
+
+.actorPhoto {
+  height: 200px;
+}
