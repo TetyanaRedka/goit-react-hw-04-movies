@@ -10,9 +10,13 @@ class Reviews extends Component {
   async componentDidMount() {
     const movieId = this.props.match.params.movieId;
 
-    const reviews = await getReviews(movieId);
+    try {
+      const reviews = await getReviews(movieId);
 
-    this.setState({ reviews });
+      this.setState({ reviews });
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
   render() {

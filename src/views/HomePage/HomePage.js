@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { getTrendMovies } from '../../servises/movies-api';
-import MoviesList from '../MoviesList/MoviesList';
+import MoviesList from '../../components/MoviesList/MoviesList';
 
 class HomePage extends Component {
   state = {

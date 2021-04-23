@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Suspense, lazy } from 'react';
 import { Route, Link } from 'react-router-dom';
-
-import Cast from '../Cast/Cast';
-import Reviews from '../Reviews/Reviews';
-
 import { getMovieDetails } from '../../servises/movies-api';
 
 import styles from './MovieDetailsPage.module.css';
+
+const Cast = lazy(() => import('../../components/Cast/Cast.js'));
+const Reviews = lazy(() => import('../../components/Reviews/Reviews.js'));
 
 class MovieDetailsPage extends Component {
   state = {
@@ -22,18 +21,23 @@ class MovieDetailsPage extends Component {
   async componentDidMount() {
     const movieId = this.props.match.params.movieId;
 
-    const movie = await getMovieDetails(movieId);
+    try {
+      const movie = await getMovieDetails(movieId);
 
-    this.setState({ ...movie });
+      this.setState({ ...movie });
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
   handleGoBack = () => {
     const { history, location } = this.props;
 
-    history.push(location?.state?.from || this.props.history.push('/'));
+    history.push(location?.state?.from || history.push('/'));
   };
 
   render() {
+    const { from } = this.props.location.state;
     const { url, path } = this.props.match;
     const { title, overview, poster_path, release_date, genres } = this.state;
     return (
@@ -69,16 +73,36 @@ class MovieDetailsPage extends Component {
           <h3>Additional information</h3>
           <ul>
             <li>
-              <Link to={`${url}/cast`}>Cast</Link>
+              <Link
+                to={{
+                  pathname: `${url}/cast`,
+                  state: {
+                    from,
+                  },
+                }}
+              >
+                Cast
+              </Link>
             </li>
             <li>
-              <Link to={`${url}/reviews`}>Reviews</Link>
+              <Link
+                to={{
+                  pathname: `${url}/reviews`,
+                  state: {
+                    from,
+                  },
+                }}
+              >
+                Reviews
+              </Link>
             </li>
           </ul>
         </div>
         <div>
-          <Route path={`${path}/cast`} component={Cast} />
-          <Route path={`${path}/reviews`} component={Reviews} />
+          <Suspense fallback={<h1>...</h1>}>
+            <Route path={`${path}/cast`} component={Cast} />
+            <Route path={`${path}/reviews`} component={Reviews} />
+          </Suspense>
         </div>
       </>
     );

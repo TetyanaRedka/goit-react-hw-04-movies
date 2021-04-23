@@ -11,10 +11,13 @@ class Cast extends Component {
 
   async componentDidMount() {
     const movieId = this.props.match.params.movieId;
+    try {
+      const cast = await getCast(movieId);
 
-    const cast = await getCast(movieId);
-
-    this.setState({ cast });
+      this.setState({ cast });
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
   render() {
